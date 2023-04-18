@@ -1,0 +1,51 @@
+﻿@page "/all_employees"
+@using BlazorWebAppCRUD.Data
+@inject EmployeeService employeeservice
+
+<h3>All Employee List</h3>
+<hr />
+<a href="/add_employee" class="btn btn-primary">Add Employee</a>
+<br /><br />
+
+@if(emp_obj is null)
+{
+    <center><p><em>Loading......</em></p></center>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th><div class="text-center">ID</div></th>
+                <th><div class="text-center">First Name</div></th>
+                <th><div class="text-center">Last Name</div></th>
+                <th><div class="text-center">Address</div></th>
+                <th colspan="2"><div class="text-center">Actions</div></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var i in emp_obj)
+        {
+            <tr>
+                <td>@i.Id</td>
+                <td>@i.Firstname</td>
+                <td>@i.Lastname</td>
+                <td>@i.Address</td>
+                <td><div class="text-center"><a href="/edit_employee/@i.Id" class="btn btn-warning"><span class="oi oi-pencil"></span>   Edit</a></div></td>
+                <td><div class="text-center"><a href="/delete_employee/@i.Id" class="btn btn-danger"><span class="oi oi-trash"></span>   Delete</a></div></td>
+            </tr>   
+        }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+    List<Employee> emp_obj;
+
+    protected override async Task OnInitializedAsync()
+    {
+        emp_obj = await Task.Run(() => employeeservice.Readall());
+    }
+}

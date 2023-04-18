@@ -1,0 +1,50 @@
+﻿@page "/add_employee"
+@using BlazorWebAppCRUD.Data
+@inject EmployeeService employeeservice
+@inject NavigationManager NavigationManager
+
+<h3>Add Employee</h3>
+<hr />
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="for-group">
+                <lable for="id" class="control-label">First Name</lable>
+                <input form="id" class="form-control" @bind-value=@obj.Firstname />
+            </div>
+            <div class="for-group">
+                <lable for="id" class="control-label">Last Name</lable>
+                <input form="id" class="form-control" @bind-value=@obj.Lastname />
+            </div>
+            <div class="for-group">
+                <lable for="id" class="control-label">Address</lable>
+                <input form="id" class="form-control" @bind-value=@obj.Address />
+            </div>
+        </div>
+    </div>
+    <br /><br />
+    <div class="row">
+        <div class="clo-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-success" @onclick=@addnewemp value="Save Employee"/>&nbsp;&nbsp;
+                <input type="button" class="btn btn-primary" @onclick=@cancel value="Cancel" />
+            </div>
+        </div> 
+    </div>
+
+</form>
+
+
+@code {
+    Employee obj = new Employee();
+    protected async void addnewemp()
+    {
+        await employeeservice.Create(obj);
+        NavigationManager.NavigateTo("all_employees");
+    }
+
+    protected async void cancel()
+    {
+        NavigationManager.NavigateTo("all_employees");
+    }
+}

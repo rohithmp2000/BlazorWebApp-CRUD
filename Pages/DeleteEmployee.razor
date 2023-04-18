@@ -1,0 +1,70 @@
+﻿@page "/delete_employee/{id}"
+@using BlazorWebAppCRUD.Data
+@inject EmployeeService employeeservice
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+
+<h3>Delete Employee</h3>
+<hr />
+<form>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="for-group">
+                <lable for="id" class="control-label">Id</lable>
+                <label form="id" class="form-control">@obj.Id</label>
+            </div>
+            <div class="for-group">
+                <lable for="id" class="control-label">First Name</lable>
+                <lable form="id" class="form-control">@obj.Firstname</lable>
+            </div>
+            <div class="for-group">
+                <lable for="id" class="control-label">Last Name</lable>
+                <lable form="id" class="form-control">@obj.Lastname</lable>
+            </div>
+            <div class="for-group">
+                <lable for="id" class="control-label">Address</lable>
+                <lable form="id" class="form-control">@obj.Address</lable>
+            </div>
+        </div>
+    </div>
+    <br /><br />
+    <div class="row">
+        <div class="clo-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-danger" value="Delete Employee" onclick="@deleteemp"/>&nbsp;&nbsp;
+                <input type="button" class="btn btn-primary" onclick=@cancel value="Cancel" />
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+    Employee obj = new Employee();
+
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await Task.Run(() => employeeservice.Readbyid(Convert.ToInt32(Id)));
+    }
+
+    protected async Task deleteemp()
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure "+ obj.Id.ToString()+" - "+ obj.Firstname +" "+ obj.Lastname +" ?"); // Confirm
+        //onclick = "return confirm('Are you sure you want to delete @obj.Id - @obj.Firstname @obj.Lastname ?')"
+        if (confirmed)
+        {
+            await employeeservice.Delete(obj);
+        }
+        NavigationManager.NavigateTo("all_employees");
+    }
+
+    protected async void cancel()
+    {
+        NavigationManager.NavigateTo("all_employees");
+    }
+}
